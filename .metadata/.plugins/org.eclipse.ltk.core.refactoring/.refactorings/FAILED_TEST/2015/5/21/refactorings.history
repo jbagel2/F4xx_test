@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;FAILED_TEST/src/logo&apos; to &apos;logo.h&apos;" description="Rename resource &apos;logo&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/logo" name="logo.h" stamp="1432098325256" updateReferences="true"/>
+</session>

@@ -1,0 +1,35 @@
+21:44:21 **** Incremental Build of configuration Debug for project FAILED_TEST ****
+make all 
+Building file: ../src/main.c
+Invoking: MCU GCC Compiler
+%cd%
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=softfp -mfpu=fpv4-sp-d16 -DSTM32F429ZITx -DSTM32F429I_DISCO -DSTM32F4 -DSTM32 -DDEBUG -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx -I"C:/ARMDevelopment/STM32 Projects/F429/FAIL/FAILED_TEST/inc" -I"C:/ARMDevelopment/STM32 Projects/F429/FAIL/FAILED_TEST/src/myCustomLibs" -I"C:/ARMDevelopment/STM32 Projects/F429/FAIL/FAILED_TEST/CMSIS/core" -I"C:/ARMDevelopment/STM32 Projects/F429/FAIL/FAILED_TEST/CMSIS/device" -I"C:/ARMDevelopment/STM32 Projects/F429/FAIL/FAILED_TEST/StdPeriph_Driver/inc" -I"C:/ARMDevelopment/STM32 Projects/F429/FAIL/FAILED_TEST/Utilities/Common" -I"C:/ARMDevelopment/STM32 Projects/F429/FAIL/FAILED_TEST/Utilities/STM32F429I-Discovery" -O0 -g3 -Wall -fmessage-length=0 -ffunction-sections -c -MMD -MP -MF"src/main.d" -MT"src/main.d" -o "src/main.o" "../src/main.c"
+../src/main.c: In function 'main':
+../src/main.c:38:7: warning: unused variable 'text_line_y' [-Wunused-variable]
+   int text_line_y;
+       ^
+../src/main.c:37:7: warning: unused variable 'line_count' [-Wunused-variable]
+   int line_count;
+       ^
+../src/main.c:36:19: warning: unused variable 'line_from_y' [-Wunused-variable]
+  int line_from_x, line_from_y;
+                   ^
+../src/main.c:102:18: warning: 'line_from_x' may be used uninitialized in this function [-Wmaybe-uninitialized]
+      LCD_DrawLine(line_from_x+(i * 24), 183-80, 80, LCD_DIR_VERTICAL);
+                  ^
+Finished building: ../src/main.c
+ 
+Building target: FAILED_TEST.elf
+Invoking: MCU GCC Linker
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=softfp -mfpu=fpv4-sp-d16 -T"C:\ARMDevelopment\STM32 Projects\F429\FAIL\FAILED_TEST\LinkerScript.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "FAILED_TEST.elf" @"objects.list"  
+Finished building target: FAILED_TEST.elf
+ 
+make --no-print-directory post-build
+Generating binary and Printing size information:
+arm-none-eabi-objcopy -O binary "FAILED_TEST.elf" "FAILED_TEST.bin" && arm-none-eabi-size "FAILED_TEST.elf"
+   text	   data	    bss	    dec	    hex	filename
+  30376	   1156	   1588	  33120	   8160	FAILED_TEST.elf
+ 
+21:44:33 **** Incremental Build of configuration Debug for project FAILED_TEST ****
+make all 
+make: Nothing to be done for `all'.

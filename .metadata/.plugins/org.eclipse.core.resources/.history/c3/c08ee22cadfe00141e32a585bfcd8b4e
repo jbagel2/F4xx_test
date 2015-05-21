@@ -1,0 +1,135 @@
+/**
+  ******************************************************************************
+  * @file    main.c
+  * @author  Ac6
+  * @version V1.0
+  * @date    01-December-2013
+  * @brief   Default main function.
+  ******************************************************************************
+*/
+
+
+#include "stm32f4xx.h"
+#include "stm32f429i_discovery.h"
+#include "time.h"
+#include "stm32f4xx_gpio.h"
+#include "stm32f4xx_rcc.h"
+#include "stm32f429i_discovery_lcd.h"
+#include "stm32f4xx_flash.h"
+#include "stm32f4xx_usart.h"
+#include "system_stm32f4xx.h"
+
+void Clock_Config();
+void GPIO_Config();
+void USART_Config();
+void USART1_Send_String(char *message);
+
+uint32_t timeStamp = 0;
+
+int main(void)
+{
+	SystemInit();
+	SystemCoreClockUpdate();
+	Init_Time(MILLISEC,180);
+
+	Clock_Config();
+	GPIO_Config();
+	USART_Config();
+	LCD_Init();
+	/* LCD Configuration */
+	LCD_LayerInit();
+	/* Enable LCD display */
+	LCD_DisplayOn();
+	/* Set foreground layer */
+	LCD_SetLayer(LCD_FOREGROUND_LAYER);
+	/* Clear the LCD */
+	LCD_Clear(LCD_COLOR_WHITE);
+	/* Set the LCD Back Color */
+	LCD_SetBackColor(LCD_COLOR_WHITE);
+	/* Set the LCD Text Color */
+	LCD_SetTextColor(LCD_COLOR_BLUE);
+	LCD_DisplayStringLine(LCD_LINE_0, (uint8_t *)" STM324x9I-EVAL ");
+	LCD_DisplayStringLine(LCD_LINE_1, (uint8_t *)" Example on how to ");
+	LCD_DisplayStringLine(LCD_LINE_2, (uint8_t *)" use the IO Expander ");
+	for(;;)
+	{
+		if ((Millis() - timeStamp) > 1000 )
+		{
+			timeStamp = Millis();
+			GPIOG->ODR ^= GPIO_Pin_13;
+			USART1_Send_String("Blink!!\n");
+		}
+	}
+}
+
+void Clock_Config()
+{
+
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOG, ENABLE);
+	//RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+
+}
+
+
+void GPIO_Config()
+{
+
+	GPIO_PinAFConfig(GPIOA, GPIO_PinSource9, GPIO_AF_USART1);
+	GPIO_PinAFConfig(GPIOA, GPIO_PinSource10, GPIO_AF_USART1);
+
+	GPIO_InitTypeDef LEDs_Config;
+
+	LEDs_Config.GPIO_Speed = GPIO_Speed_100MHz;
+	LEDs_Config.GPIO_Mode = GPIO_Mode_OUT;
+	LEDs_Config.GPIO_OType = GPIO_OType_PP;
+	LEDs_Config.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	LEDs_Config.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14;
+
+	GPIO_Init(GPIOG, &LEDs_Config);
+
+}
+
+void USART_Config()
+{
+
+
+
+	//TODO: Need to configure USART1 GPIO Pins
+	GPIO_InitTypeDef USARTPin_Config;
+
+	USARTPin_Config.GPIO_Speed = GPIO_Speed_100MHz;
+	USARTPin_Config.GPIO_Mode = GPIO_Mode_AF;
+	USARTPin_Config.GPIO_OType = GPIO_OType_PP;
+	USARTPin_Config.GPIO_PuPd = GPIO_PuPd_UP;
+	USARTPin_Config.GPIO_Pin = GPIO_Pin_9 | GPIO_Pin_10;
+
+	GPIO_Init(GPIOA, &USARTPin_Config);
+
+
+	USART_InitTypeDef Serial_Config;
+
+	Serial_Config.USART_BaudRate = 2764800;
+	Serial_Config.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+	Serial_Config.USART_Parity = USART_Parity_No;
+	Serial_Config.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+	Serial_Config.USART_StopBits = USART_StopBits_1;
+	Serial_Config.USART_WordLength = USART_WordLength_8b;
+
+	USART_Init(USART1, &Serial_Config);
+
+	USART_Cmd(USART1, ENABLE);
+}
+
+void USART1_Send_String(char *message)
+{
+	while(*message)
+	{
+	while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET){}
+	USART_SendData(USART1, *message++);
+	}
+
+
+
+}
